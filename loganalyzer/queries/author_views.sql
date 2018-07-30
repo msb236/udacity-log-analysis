@@ -8,4 +8,4 @@ join authors as auth
     on art.author = auth.id
 group by auth.name
 order by views desc
-limit 3;
+;
