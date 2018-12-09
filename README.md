@@ -4,6 +4,10 @@ Report on popularity of articles and authors as well as usage error rates for a 
 
 # Quickstart
 
+## Prerequisits
+
+This project assumes you have staged the required [source data](https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip) into a local psql database.
+
 ## Install
 
 Clone this repository
