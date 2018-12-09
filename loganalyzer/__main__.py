@@ -1,3 +1,4 @@
+#!/bin/env python2.7
 """Report log analysis to standard out"""
 import psycopg2
 from . import queries
@@ -19,21 +20,32 @@ class Report:
     reporting views from .sql files in `queries` submodule, and executes
     the three quired reports.
     """
-    def __init__(self):
 
+    def __init__(self):
+        # Create db connection
         self.db = psycopg2.connect('dbname=news')
+        # Get cursor object
         self.cur = self.db.cursor()
+        # Add view to db with view counts by slug
         self.create_view_for_article_views()
+        # Run report modules
+        self.run_reports()
+
+    def run_reports(self):
+        """Run all three report modules"""
+        # Popular articles
         self.report_from_query(
             query=queries.popular_articles,
             desc=_ARTICLE_REPORT_DESC,
             fmt=_ARTICLE_REPORT_FMT
         )
+        # Popular article authors
         self.report_from_query(
             query=queries.author_views,
             desc=_AUTHOR_REPORT_DESC,
             fmt=_AUTHOR_REPORT_FMT
         )
+        # High error-rate days
         self.report_from_query(
             query=queries.errors_by_day,
             desc=_ERRORS_REPORT_DESC,
@@ -42,12 +54,12 @@ class Report:
 
     def create_view_for_article_views(self):
         """Create view-count-by-slug view from .sql file"""
-
+        # Run view creation statements
         self.cur.execute(queries.article_views)
         self.db.commit()
 
     def report_from_query(self, query, desc, fmt):
-        """Execute individual report component
+        """Execute individual report module 
 
         Print report description, execution report sql, and
         print report output.
@@ -58,7 +70,6 @@ class Report:
             fmt (str): Report output template to be populated 
                 with query results
         """
-
         # Print report descrition / header to screen
         print(desc)
         # Execute analysis query to generate reporting results
@@ -71,5 +82,5 @@ class Report:
 
 
 if __name__ == '__main__':
-
+    # Generate report
     Report()
